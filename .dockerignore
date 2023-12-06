@@ -35,3 +35,7 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
+
+# Ignore history files.
+/docker/.bash_history
+/docker/.irb_history

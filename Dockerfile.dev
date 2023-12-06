@@ -1,0 +1,46 @@
+# syntax = docker/dockerfile:1
+
+ARG RUBY_VERSION=3.2.2
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+
+ENV LANG C.UTF-8
+ENV TZ=Asia/Tokyo
+
+ENV APP_ROOT /rails
+RUN mkdir -p ${APP_ROOT}
+WORKDIR ${APP_ROOT}
+
+FROM base as build
+
+RUN apt-get update -qq \
+  && apt-get install --no-install-recommends -y build-essential \
+  libsqlite3-0 \
+  pkg-config
+
+COPY Gemfile ${APP_ROOT}/
+COPY Gemfile.lock ${APP_ROOT}/
+
+RUN bundle config jobs 4 \
+  && bundle config build.nokogiri --use-system-libraries \
+  && bundle install
+
+COPY . ${APP_ROOT}
+
+RUN mkdir -p ${APP_ROOT}/tmp/pids ${APP_ROOT}/tmp/sockets
+
+FROM base
+
+RUN apt-get update -qq \
+  && apt-get install --no-install-recommends -y \
+  curl \
+  git \
+  sqlite3 \
+  libvips \
+  && rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build ${APP_ROOT} ${APP_ROOT}
+
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT [ "entrypoint.sh" ]
