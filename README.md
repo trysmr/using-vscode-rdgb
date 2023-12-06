@@ -1,24 +1,7 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+↓の記事の成果物です。
 
-Things you may want to cover:
+VSCode Ruby rdbg DebuggerでRailsアプリをデバッグできるようにする
+https://zenn.dev/trysmr/articles/3f63e7622ef5e4
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
